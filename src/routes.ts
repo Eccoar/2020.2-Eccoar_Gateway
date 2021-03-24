@@ -34,4 +34,8 @@ routers.post("/api/complaint/create", async (req:Request, resp:Response) => {
     return await complaintProxy.createComplaint(req, resp);
 });
 
+routers.post("/api/vote/add", async (req:Request, resp:Response) => {
+    return await complaintProxy.addVote(req, resp);
+});
+
 export default routers;

@@ -43,4 +43,13 @@ export class ComplaintProxy {
             return resp.status(err.response.status).json(err.response.data);
         }
     }
+
+    async addVote(req:Request, resp: Response): Promise<Response>{
+        try {
+            const res = await axios.post(this.path + '/vote/add', req.body);
+            return resp.sendStatus(res.status);
+        } catch(err) {
+            return resp.status(err.response.status).json(err.response.data);
+        }
+    }
 }
