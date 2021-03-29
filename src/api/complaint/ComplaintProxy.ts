@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { response, Response, Request } from 'express';
+import { response, Response, Request, json } from 'express';
 
 
 export class ComplaintProxy {
@@ -51,5 +51,21 @@ export class ComplaintProxy {
         } catch(err) {
             return resp.status(err.response.status).json(err.response.data);
         }
+    }
+
+    async listVote(req:Request, resp: Response): Promise<Response> {
+        return new Promise(resolve => {
+            axios.get(this.path + '/vote/list', {
+                params: {
+                    userId: Number(req.query.userId),
+                    skip: Number(req.query.skip),
+                    take: Number(req.query.take)
+                }
+            }).then(response => {
+               return resp.status(response.status).json(response.data);
+            }).catch((err) => {
+               return resp.status(err.response.status).json(err.response.data);
+            });
+        });
     }
 }
