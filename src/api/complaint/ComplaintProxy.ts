@@ -65,6 +65,23 @@ export class ComplaintProxy {
 		}
 	}
 
+	async deleteComplaint(req: Request, resp: Response): Promise<Response> {
+		try {
+			const res = await axios.delete(
+				this.path + '/complaint/delete',
+				{
+					params: {
+						userId: Number(req.query.userId),
+						id: Number(req.query.id),
+					},
+				}
+			);
+			return resp.status(res.status).json({ msg: 'OK' });
+		} catch (err) {
+			return resp.status(err.response.status).json(err.response.data);
+		}
+	}
+
 	async addVote(req: Request, resp: Response): Promise<Response> {
 		try {
 			const res = await axios.post(this.path + '/vote/add', req.body);
