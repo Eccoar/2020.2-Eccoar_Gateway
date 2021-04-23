@@ -25,6 +25,8 @@ export class ComplaintProxy {
 					skip: String(req.query.skip),
 					take: String(req.query.take),
 					orderDate: String(req.query.orderDate),
+					latitude: Number(req.query.latitude),
+					longitude: Number(req.query.longitude),
 				},
 			});
 			return resp.status(res.status).json(res.data);
