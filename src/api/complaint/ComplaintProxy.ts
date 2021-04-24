@@ -20,26 +20,13 @@ export class ComplaintProxy {
 
 	async listComplaints(req: Request, resp: Response): Promise<Response> {
 		try {
-			const res = await axios.get(
-				this.path + '/complaints',
-				req.query.latitude != null && req.query.longitude != null
-					? {
-							params: {
-								skip: String(req.query.skip),
-								take: String(req.query.take),
-								orderDate: String(req.query.orderDate),
-								latitude: Number(req.query.latitude),
-								longitude: Number(req.query.longitude),
-							},
-					  }
-					: {
-							params: {
-								skip: String(req.query.skip),
-								take: String(req.query.take),
-								orderDate: String(req.query.orderDate),
-							},
-					  },
-			);
+			const res = await axios.get(this.path + '/complaints', {
+				params: {
+					skip: String(req.query.skip),
+					take: String(req.query.take),
+					orderDate: String(req.query.orderDate),
+				},
+			});
 			return resp.status(res.status).json(res.data);
 		} catch (error) {
 			console.error(error);
@@ -54,8 +41,8 @@ export class ComplaintProxy {
 		try {
 			const res = await axios.get(this.path + '/complaint/votes', {
 				params: {
-					userId: Number(req.query.userId),
-					complaintId: Number(req.query.complaintId),
+					userId: req.query.userId,
+					complaintId: req.query.complaintId,
 				},
 			});
 			return resp.status(res.status).json(res.data);
@@ -113,21 +100,24 @@ export class ComplaintProxy {
 			axios
 				.get(
 					this.path + '/vote/list',
-					req.query.latitude != null && req.query.longitude != null
+					(req.query.latitude != null ||
+						req.query.latitude != undefined) &&
+						(req.query.longitude != null ||
+							req.query.longitude != undefined)
 						? {
 								params: {
-									userId: Number(req.query.userId),
-									skip: Number(req.query.skip),
-									take: Number(req.query.take),
-									latitude: Number(req.query.latitude),
-									longitude: Number(req.query.longitude),
+									userId: req.query.userId,
+									skip: req.query.skip,
+									take: req.query.take,
+									latitude: req.query.latitude,
+									longitude: req.query.longitude,
 								},
 						  }
 						: {
 								params: {
-									userId: Number(req.query.userId),
-									skip: Number(req.query.skip),
-									take: Number(req.query.take),
+									userId: req.query.userId,
+									skip: req.query.skip,
+									take: req.query.take,
 								},
 						  },
 				)
