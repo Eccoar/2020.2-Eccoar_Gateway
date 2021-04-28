@@ -4,6 +4,7 @@ import { UsersProxy } from './api/users/UsersProxy';
 import { ComplaintProxy } from './api/complaint/ComplaintProxy';
 import { ReportProxy } from './api/report/ReportProxy';
 import { MailerProxy } from './api/mailer/MailerProxy';
+import checkJWT from './api/middlewares/auth';
 
 const routers = Router();
 const usersProxy = new UsersProxy(paths.configUsers());
@@ -19,15 +20,19 @@ routers.get('/api/complaints/ping', async (req: Request, resp: Response) => {
 	return await complaintProxy.pingComplaint(req, resp);
 });
 
-routers.post('/api/complaints', async (req: Request, resp: Response) => {
-	return await complaintProxy.createComplaint(req, resp);
-});
+routers.post(
+	'/api/complaints',
+	checkJWT,
+	async (req: Request, resp: Response) => {
+		return await complaintProxy.createComplaint(req, resp);
+	},
+);
 
-routers.post('/api/votes', async (req: Request, resp: Response) => {
+routers.post('/api/votes', checkJWT, async (req: Request, resp: Response) => {
 	return await complaintProxy.addVote(req, resp);
 });
 
-routers.get('/api/votes', async (req: Request, resp: Response) => {
+routers.get('/api/votes', checkJWT, async (req: Request, resp: Response) => {
 	return await complaintProxy.listVote(req, resp);
 });
 
@@ -36,17 +41,50 @@ routers.get('/api/mailer/ping', async (req: Request, resp: Response) => {
 	resp.status(200).json(response);
 });
 
-routers.get('/api/complaints', async (req: Request, resp: Response) => {
-	return await complaintProxy.listComplaints(req, resp);
-});
+routers.get(
+	'/api/complaints',
+	checkJWT,
+	async (req: Request, resp: Response) => {
+		return await complaintProxy.listComplaints(req, resp);
+	},
+);
 
 routers.get('/api/reports/ping', async (req: Request, resp: Response) => {
 	return await reportProxy.pingReport(req, resp);
 });
 
-routers.get('/api/complaints/votes', async (req: Request, resp: Response) => {
-	return await complaintProxy.getComplaintWithVote(req, resp);
-});
+routers.get(
+	'/api/complaints/votes',
+	checkJWT,
+	async (req: Request, resp: Response) => {
+		return await complaintProxy.getComplaintWithVote(req, resp);
+	},
+);
+
+routers.post(
+	'/api/mailer/send',
+	checkJWT,
+	async (req: Request, resp: Response) => {
+		try {
+			const reportRequest = {} as Request;
+			const complaintResponse = await complaintProxy.getWaitComplaints(
+				req,
+			);
+			reportRequest.body = {
+				complaints: complaintResponse,
+				category: String(req.query.category),
+			};
+			const reportResponse = await reportProxy.createReport(
+				reportRequest,
+			);
+			const mailerRequest = {} as Request;
+			mailerRequest.body = reportResponse;
+			return await mailerProxy.sendMail(mailerRequest, resp);
+		} catch (error) {
+			return resp.status(400).json({ error: error });
+		}
+	},
+);
 
 routers.delete('/api/complaints', async (req: Request, resp: Response) => {
 	return await complaintProxy.deleteComplaint(req, resp);
@@ -67,6 +105,10 @@ routers.post('/api/mailer/send', async (req: Request, resp: Response) => {
 	} catch (error) {
 		return resp.status(400).json({ error: error });
 	}
+});
+
+routers.post('/api/signin', async (req: Request, resp: Response) => {
+	return await usersProxy.signIn(req, resp);
 });
 
 routers.post('/api/users', async (req: Request, resp: Response) => {

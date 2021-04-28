@@ -26,4 +26,20 @@ export class UsersProxy {
 			return resp.status(err.response.status).json(err.response.data);
 		}
 	}
+
+	async signIn(req: Request, resp: Response): Promise<Response> {
+		try {
+			const res = await axios.post(this.path + '/signin', {
+				...req.body,
+			});
+			return resp.send(res.status).json(res.status);
+		} catch (err) {
+			return resp.send(err.response.status).json(err.response.data);
+		}
+	}
+
+	async authorization(token: string): Promise<string> {
+		const res = await axios.post(this.path + '/authorization', { token });
+		return res.data.userId;
+	}
 }
