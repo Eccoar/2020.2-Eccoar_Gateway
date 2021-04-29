@@ -1,7 +1,5 @@
 import axios from 'axios';
-import { NextFunction, Request, Response } from 'express';
 import * as request from 'supertest';
-import AuthValidator from '../src/api/middlewares/auth';
 import { UsersProxy } from '../src/api/users/UsersProxy';
 import app from '../src/server';
 
@@ -49,10 +47,7 @@ describe('test complaints route', () => {
 	beforeEach(() => {
 		UsersProxy.prototype.authorization = jest
 			.fn()
-			.mockImplementationOnce((token) => {
-				console.log(`___${token}__`);
-				return '123123';
-			});
+			.mockImplementationOnce(() => '123123');
 	});
 
 	const mockStatus = {

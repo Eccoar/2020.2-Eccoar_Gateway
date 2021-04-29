@@ -4,7 +4,6 @@ import { UsersProxy } from './api/users/UsersProxy';
 import { ComplaintProxy } from './api/complaint/ComplaintProxy';
 import { ReportProxy } from './api/report/ReportProxy';
 import { MailerProxy } from './api/mailer/MailerProxy';
-import checkJWT from './api/middlewares/auth';
 import AuthValidator from './api/middlewares/auth';
 
 const routers = Router();
