@@ -4,19 +4,19 @@ import { UsersProxy } from '../users/UsersProxy';
 
 const userProxy = new UsersProxy(paths.configUsers());
 
-const checkJWT = async (
-	req: Request,
-	resp: Response,
-	next: NextFunction,
-): Promise<Response | void> => {
-	const token: string = req.headers['authorization'];
-
-	try {
-		await userProxy.authorization(token);
-	} catch (err) {
-		return resp.send(err.response.status).json(err.response.data);
-	}
-	next();
-};
-
-export default checkJWT;
+export default class AuthValidator {
+	checkJWT = async (
+		req: Request,
+		resp: Response,
+		next: NextFunction,
+	): Promise<Response | void> => {
+		const token: string = req.headers['authorization'];
+		console.log('---' + token + '---');
+		try {
+			await userProxy.authorization(token);
+		} catch (err) {
+			return resp.sendStatus(401);
+		}
+		next();
+	};
+}

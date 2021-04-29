@@ -32,9 +32,9 @@ export class UsersProxy {
 			const res = await axios.post(this.path + '/signin', {
 				...req.body,
 			});
-			return resp.send(res.status).json(res.status);
+			return resp.status(res.status).json(res.data);
 		} catch (err) {
-			return resp.send(err.response.status).json(err.response.data);
+			return resp.status(err.response.status).json(err.response.data);
 		}
 	}
 
