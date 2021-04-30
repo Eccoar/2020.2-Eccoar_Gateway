@@ -82,16 +82,10 @@ export class ComplaintProxy {
 	async addVote(req: Request, resp: Response): Promise<Response> {
 		try {
 			const res = await axios.post(this.path + '/vote/add', req.body);
-<<<<<<< HEAD
 			return resp.sendStatus(res.status);
 		} catch (error) {
 			console.error(error);
 			return resp.status(error.response.status).json(error.response.data);
-=======
-			return resp.status(res.status).json(res.data);
-		} catch (err) {
-			return resp.status(err.response.status).json(err.response.data);
->>>>>>> Updating AddVote return
 		}
 	}
 
