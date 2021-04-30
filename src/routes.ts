@@ -4,6 +4,7 @@ import { UsersProxy } from './api/users/UsersProxy';
 import { ComplaintProxy } from './api/complaint/ComplaintProxy';
 import { ReportProxy } from './api/report/ReportProxy';
 import { MailerProxy } from './api/mailer/MailerProxy';
+import { emailJob } from './cron/jobs/emailJob';
 
 const routers = Router();
 const usersProxy = new UsersProxy(paths.configUsers());
@@ -49,20 +50,7 @@ routers.get('/api/complaints/votes', async (req: Request, resp: Response) => {
 });
 
 routers.post('/api/mailer/send', async (req: Request, resp: Response) => {
-	try {
-		const reportRequest = {} as Request;
-		const complaintResponse = await complaintProxy.getWaitComplaints(req);
-		reportRequest.body = {
-			complaints: complaintResponse,
-			category: String(req.query.category),
-		};
-		const reportResponse = await reportProxy.createReport(reportRequest);
-		const mailerRequest = {} as Request;
-		mailerRequest.body = reportResponse;
-		return await mailerProxy.sendMail(mailerRequest, resp);
-	} catch (error) {
-		return resp.status(400).json({ error: error });
-	}
+	return await emailJob(req, resp);
 });
 
 routers.post('/api/users', async (req: Request, resp: Response) => {
