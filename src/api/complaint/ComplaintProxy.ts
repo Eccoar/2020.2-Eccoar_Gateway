@@ -41,7 +41,7 @@ export class ComplaintProxy {
 		try {
 			const res = await axios.get(this.path + '/complaint/votes', {
 				params: {
-					userId: Number(req.query.userId),
+					userId: req.query.userId,
 					complaintId: Number(req.query.complaintId),
 				},
 			});
@@ -69,7 +69,7 @@ export class ComplaintProxy {
 		try {
 			const res = await axios.delete(this.path + '/complaints', {
 				params: {
-					userId: Number(req.query.userId),
+					userId: req.query.userId,
 					id: Number(req.query.id),
 				},
 			});
@@ -94,7 +94,7 @@ export class ComplaintProxy {
 			axios
 				.get(this.path + '/vote/list', {
 					params: {
-						userId: Number(req.query.userId),
+						userId: req.query.userId,
 						skip: Number(req.query.skip),
 						take: Number(req.query.take),
 					},

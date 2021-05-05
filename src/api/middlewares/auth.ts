@@ -11,7 +11,6 @@ export default class AuthValidator {
 		next: NextFunction,
 	): Promise<Response | void> => {
 		const token: string = req.headers['authorization'];
-		console.log('---' + token + '---');
 		try {
 			await userProxy.authorization(token);
 		} catch (err) {
