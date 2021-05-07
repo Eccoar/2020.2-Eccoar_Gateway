@@ -95,26 +95,13 @@ routers.post(
 	},
 );
 
-routers.delete('/api/complaints', async (req: Request, resp: Response) => {
-	return await complaintProxy.deleteComplaint(req, resp);
-});
-
-routers.post('/api/mailer/send', async (req: Request, resp: Response) => {
-	try {
-		const reportRequest = {} as Request;
-		const complaintResponse = await complaintProxy.getWaitComplaints(req);
-		reportRequest.body = {
-			complaints: complaintResponse,
-			category: String(req.query.category),
-		};
-		const reportResponse = await reportProxy.createReport(reportRequest);
-		const mailerRequest = {} as Request;
-		mailerRequest.body = reportResponse;
-		return await mailerProxy.sendMail(mailerRequest, resp);
-	} catch (error) {
-		return resp.status(400).json({ error: error });
-	}
-});
+routers.delete(
+	'/api/complaints',
+	authValidator.checkJWT,
+	async (req: Request, resp: Response) => {
+		return await complaintProxy.deleteComplaint(req, resp);
+	},
+);
 
 routers.post('/api/signin', async (req: Request, resp: Response) => {
 	return await usersProxy.signIn(req, resp);
