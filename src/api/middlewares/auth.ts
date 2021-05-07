@@ -11,10 +11,11 @@ export default class AuthValidator {
 		next: NextFunction,
 	): Promise<Response | void> => {
 		const token: string = req.headers['authorization'];
+		if (!token) return resp.sendStatus(401);
 		try {
 			await userProxy.authorization(token);
 		} catch (err) {
-			return resp.sendStatus(401);
+			return resp.sendStatus(403);
 		}
 		next();
 	};
