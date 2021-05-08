@@ -41,7 +41,7 @@ describe('Test auth middleware', () => {
 
 		const authValidator = new AuthValidator();
 		await authValidator.checkJWT(mRequest, mResponse, mNext);
-		expect(mResponse.sendStatus).toHaveBeenCalledWith(401);
+		expect(mResponse.status).toHaveBeenCalledWith(403);
 	});
 
 	it('User has an invalid token', async () => {
@@ -60,6 +60,6 @@ describe('Test auth middleware', () => {
 			'authorization',
 		).mockImplementation(() => Promise.reject('Invalid token'));
 		await authValidator.checkJWT(mRequest, mResponse, mNext);
-		expect(mResponse.sendStatus).toHaveBeenCalledWith(403);
+		expect(mResponse.status).toHaveBeenCalledWith(403);
 	});
 });

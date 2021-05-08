@@ -11,11 +11,16 @@ export default class AuthValidator {
 		next: NextFunction,
 	): Promise<Response | void> => {
 		const token: string = req.headers['authorization'];
-		if (!token) return resp.sendStatus(401);
+		if (!token)
+			return resp
+				.status(403)
+				.json({ status: 'error', message: 'Access Denied' });
 		try {
 			await userProxy.authorization(token);
 		} catch (err) {
-			return resp.sendStatus(403);
+			return resp
+				.status(403)
+				.json({ status: 'error', message: 'Access Denied' });
 		}
 		next();
 	};
