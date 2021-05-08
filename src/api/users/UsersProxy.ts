@@ -39,7 +39,11 @@ export class UsersProxy {
 	}
 
 	async authorization(token: string): Promise<string> {
-		const res = await axios.post(this.path + '/authorization', { token });
+		const res = await axios.get(this.path + '/authorization', {
+			headers: {
+				authorization: token,
+			},
+		});
 		return res.data.userId;
 	}
 }
