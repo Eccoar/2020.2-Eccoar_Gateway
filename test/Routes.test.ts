@@ -102,4 +102,13 @@ describe('Test User route', () => {
 		const result = await request(app).post('/api/users').send({});
 		expect(result.status).toEqual(200);
 	});
+
+	it('Test get user route', async () => {
+		jest.spyOn(axios, 'get').mockImplementationOnce(() =>
+			Promise.resolve(mockStatus),
+		);
+
+		const result = await request(app).get(`/api/user/${'mockid'}`).send({});
+		expect(result.status).toEqual(200);
+	});
 });

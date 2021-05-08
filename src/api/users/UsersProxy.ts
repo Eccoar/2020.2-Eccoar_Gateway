@@ -26,4 +26,13 @@ export class UsersProxy {
 			return resp.status(err.response.status).json(err.response.data);
 		}
 	}
+
+	async getUserByAuthId(req: Request, resp: Response): Promise<Response> {
+		try {
+			const res = await axios.get(this.path + `/user/${req.params.id}`);
+			return resp.status(res.status).json(res.data);
+		} catch (err) {
+			return resp.status(err.response.status).json(err.response.data);
+		}
+	}
 }
